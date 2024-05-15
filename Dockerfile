@@ -1,27 +1,29 @@
+# Используем базовый образ Python 3
 FROM python:3
 
-# Добавление ключей для bookworm
+# Обновляем пакеты и устанавливаем wget
 RUN apt-get update && apt-get install -y wget && \
-    wget -O /usr/share/keyrings/debian-archive-keyring.gpg https://deb.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2021.1_all.deb
+    rm -rf /var/lib/apt/lists/*
 
-# Установка необходимых пакетов и зависимостей
+# Устанавливаем ключи для проверки подлинности пакетов Debian
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9 \
+               --recv-keys 6ED0E7B82643E131 --recv-keys F8D2585B8783D481 \
+               --recv-keys 54404762BBB6E853 --recv-keys BDE6D2B9216EC7A8
+
+# Устанавливаем libpq-dev
 RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Копируем необходимые файлы в рабочую директорию
+COPY . /app
 
-# Установка зависимостей Python
-COPY requirements.txt /code/requirements.txt
-RUN pip3 install --upgrade pip && pip install -r /code/requirements.txt
+# Устанавливаем рабочую директорию
+WORKDIR /app
 
-# Копирование приложения в контейнер
-COPY . /code/dvc
-WORKDIR /code/dvc
+# Устанавливаем зависимости Python
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Настройка точки входа и команды для контейнера
-COPY ./docker-entrypoint.sh /code/dvc/docker-entrypoint.sh
-RUN chmod +x /code/dvc/docker-entrypoint.sh
-EXPOSE 8000
-CMD ["/code/dvc/docker-entrypoint.sh"]
+# Команда для запуска приложения
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
 
