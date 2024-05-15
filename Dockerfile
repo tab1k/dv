@@ -1,23 +1,25 @@
 FROM python:3
 
-# Add Debian package repository keys directly
-RUN apt-get update && apt-get install -y gnupg
-RUN wget -qO - https://deb.debian.org/debian-archive-keyring.gpg | gpg --dearmor > /usr/share/keyrings/debian-archive-keyring.gpg
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Install necessary packages
-RUN apt-get update && apt-get install -y wget && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update
 
-# Copy application files and install dependencies
 WORKDIR /code/dvc
+
+
+COPY requirements.txt /code/requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip install -r /code/requirements.txt
+RUN pip3 install Pillow psycopg2
+
+
 COPY . /code/dvc
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Optional: Run database migrations
-# RUN python manage.py migrate
+EXPOSE 8000
 
-# Start the application
-CMD ["bash", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+COPY ./docker-entrypoint.sh /code/dvc/docker-entrypoint.sh
 
+RUN chmod +x /code/dvc/docker-entrypoint.sh
 
-
+CMD ["/code/dvc/docker-entrypoint.sh"]
