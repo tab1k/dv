@@ -1,25 +1,23 @@
 FROM python:3
 
-# Создаем директорию для сохранения ключей GPG
-RUN mkdir -p /etc/apt/trusted.gpg.d
+# Add Debian package repository keys directly
+RUN apt-get update && apt-get install -y gnupg
+RUN wget -qO - https://deb.debian.org/debian-archive-keyring.gpg | gpg --dearmor > /usr/share/keyrings/debian-archive-keyring.gpg
 
-# Экспортируем все ключи GPG в файл /etc/apt/trusted.gpg.d/docker.gpg
-RUN apt-key exportall > /etc/apt/trusted.gpg.d/docker.gpg
-
-# Устанавливаем необходимые пакеты, включая wget
-RUN apt-get update && \
-    apt-get install -y wget && \
+# Install necessary packages
+RUN apt-get update && apt-get install -y wget && \
     rm -rf /var/lib/apt/lists/*
 
-# Копируем файлы приложения и устанавливаем зависимости Python
+# Copy application files and install dependencies
 WORKDIR /code/dvc
 COPY . /code/dvc
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Опционально, выполните миграции базы данных
+# Optional: Run database migrations
 # RUN python manage.py migrate
 
-# Запускаем приложение
+# Start the application
 CMD ["bash", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+
 
 
