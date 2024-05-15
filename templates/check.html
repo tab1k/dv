@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+  <title data-localized="title">Проверка валидности дипломов организаций высшего и послевузовского образования Республики Казахстан</title>
+
+  <link href="../static/images/favicon.png" rel="icon">
+
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <link href="{% static 'css/modals.css' %}" rel="stylesheet">
+  <link href="{% static 'css/loader.css' %}" rel="stylesheet">
+  <link href="{% static 'css/index.css' %}" rel="stylesheet">
+
+  <script src="{% static 'js/api.js' %}"></script>
+
+</head>
+
+<body>
+
+  <div id="header">
+
+    <div id="title" data-localized="title">Проверка валидности дипломов организаций высшего и послевузовского образования Республики Казахстан</div>
+
+  </div>
+
+  <div id="body">
+
+    <div id="menu">
+      <a href="https://dv.iac.kz/tipo-verify/" class="menu-node" data-localized="menu-tipo-verify">Проверка валидности дипломов организаций ТиПО</a>
+      <a class="menu-node active-node" data-localized="menu-vuz-verify">Проверка валидности дипломов вузов</a>
+      <a href="https://dv.iac.kz/generate-tipo/" class="menu-node" data-localized="menu-generate-diploma-tipo">Генерация данных по дипломам ТиПО</a>
+      <a href="https://dv.iac.kz/login/?returnurl=%2Fgenerate-vuz%2F" class="menu-node" data-localized="menu-generate-diploma-vuz">Генерация данных по дипломам вузов</a>
+    </div>
+
+    <div id="contents">
+
+      <div id="userforms">
+
+        <div id="guide" class="bordered-container">
+
+          <div class="collapse-header">
+
+          </div>
+
+          <div class="collapse-content">
+
+            <div class="info-block" data-localized="i1">Уважаемые пользователи системы! Данный функционал разработан для проверки валидности дипломов, выданных организациями высшего или послевузовского образования.</div>
+            <div class="info-block" data-localized="i2">Данная система позволяет убедиться в подлинности дипломов.</div>
+            <div class="info-block" data-localized="i3">Проверка валидности дипломов осуществляется на основании ИИН, серии и номера диплома. Данные поля заполняются на основании документа, удостоверяющего личность, и диплома, выданного организацией высшего или послевузовского образования.</div>
+
+            <div class="info-block" data-localized="i4">Алгоритм проверки:</div>
+
+            <div class="info-block" style="font-weight: bold;" data-localized="i5">1. Введите ИИН в поле «ИИН»</div>
+            <div class="info-block" data-localized="i6">Поле «ИИН» заполняется только при проверке дипломов, выданных резидентам Республики Казахстан, либо нерезидентам, получившим временный ИИН. В случае отсутствия ИИН данное поле не заполняется.</div>
+
+            <div class="info-block" style="font-weight: bold;" data-localized="i7">2. Введите серию диплома в поле «Серия диплома»</div>
+            <div class="info-block" data-localized="i8">Серия диплома обязательна для заполнения и представлена в виде буквенного кода (BD, BQ, MD, ЖБ-Б, ЖБ, ЖООК-М и др.)</div>
+
+            <div class="info-block" style="font-weight: bold;" data-localized="i9">3. Введите номер диплома в поле «Номер диплома»</div>
+            <div class="info-block" data-localized="i10">Номер диплома обязателен для заполнения и представлен в виде цифрового кода, состоящего из 7-11 цифр.</div>
+
+            <div class="info-block" data-localized="i11">В настоящее время в системе содержится информация о дипломах, выданных в 2020-2021 учебном году. Организациями высшего и послевузовского образования ведется работа по оцифровке дипломов прошлых лет. В связи с этим, информация о дипломах прошлых лет на данный момент может отсутствовать в системе. В случае отсутствия сведений о дипломе, выданном ранее 2020-2021 учебного года, необходимо обращаться в организацию высшего или послевузовского образования для дополнительного подтверждения.</div>
+
+          </div>
+
+        </div>
+
+        <div id="form" class="bordered-container">
+
+          <div class="form-section">
+            <label data-localized="iin-field">ИИН</label>
+            <input type="text" class="form-control" id="iin-field" value="020923500581">
+            <div class="help-block with-errors"></div>
+          </div>
+
+          <div class="form-section">
+            <label data-localized="diploma-series-field">Серия диплома</label><span style="margin-left: 2px; color: red;">*</span>
+            <input type="text" class="form-control" id="diploma-series-field" value="BD">
+            <div class="help-block with-errors"></div>
+          </div>
+
+          <div class="form-section">
+            <label data-localized="diploma-number-field">Номер диплома</label><span style="margin-left: 2px; color: red;">*</span>
+            <input type="text" class="form-control" id="diploma-number-field" value="00018129975">
+            <div class="help-block with-errors"></div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn btn-success" id="verify-btn" data-localized="verify-btn">Проверить</button>
+          </div>
+
+        </div>
+
+        <div id="verify-result" class="bordered-container">
+          <div style="color: green" data-localized="diploma-states-valid">✔ Диплом действителен</div>
+
+          <div class="info-field">
+            <div class="info-field-header" data-localized="diploma-info-issuer">Диплом выдан следующей организацией</div>
+            <div class="info-field-contents" data-localized="activeRecordEduOrgName">Учреждение "SDU University"</div>
+          </div>
+
+          <div class="info-field">
+            <div class="info-field-header" data-localized="diploma-info-fullname">Фамилия, имя, отчество выпускника</div>
+            <div class="info-field-contents">МУРАТҚАЖЫ АРДАҚ ЖАНАТҰЛЫ</div>
+          </div>
+
+          <div class="info-field">
+            <div class="info-field-header" data-localized="diploma-info-speciality">Специальность</div>
+            <div class="info-field-contents" data-localized="activeRecordSpeciality">В044 Менеджмент и управление</div>
+          </div>
+
+          <div class="info-field">
+            <div class="info-field-header" data-localized="diploma-info-period">Период обучения</div>
+            <div class="info-field-contents">2019 - 2023</div>
+          </div>
+
+          <div class="info-field">
+            <div class="info-field-header" data-localized="diploma-info-eduform">Форма обучения</div>
+            <div class="info-field-contents" data-localized="eduForms.1">очная</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="footer">
+    <div id="credits" data-localized="credits"></div>
+  </div>
+
+  <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/modals.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/loader.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+
+
+
+
+</body>
+</html>
